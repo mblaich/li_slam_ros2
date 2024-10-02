@@ -339,7 +339,7 @@ public:
 
     // make sure IMU data available for the scan
     if (imuQueue.empty()) {
-      RCLCPP_DEBUG(get_logger(), "Waiting for IMU data ...");
+      RCLCPP_WARN(get_logger(), "Waiting for IMU data ...");
       return false;
     }
 
@@ -349,7 +349,7 @@ public:
       imuQueue.back().header.stamp.nanosec * 1e-9;
     // if (imuQueue.empty() || imuQueue.front().header.stamp.toSec() > timeScanCur || imuQueue.back().header.stamp.toSec() < timeScanNext)
     if (imuQueue.empty() || t_f > timeScanCur || t_b < timeScanNext) {
-      RCLCPP_DEBUG(get_logger(), "Waiting for IMU data ...");
+      RCLCPP_WARN(get_logger(), "Waiting for IMU data ...");
       return false;
     }
 
