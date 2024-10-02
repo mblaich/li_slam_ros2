@@ -35,6 +35,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/conversions.h>
 #include <pcl/impl/pcl_base.hpp>
+#include <pcl/filters/impl/filter.hpp>
 
 typedef pcl::PointXYZI PointType;
 
@@ -282,6 +283,11 @@ public:
       timeScanNext = timeScanCur + laserCloudIn->points.back().time;
 
 
+ 
+    // remove Nan
+    vector<int> indices;
+    pcl::removeNaNFromPointCloud(*laserCloudIn, *laserCloudIn, indices);
+
     // check dense flag
     if (laserCloudIn->is_dense == false) {
       RCLCPP_ERROR(
@@ -332,6 +338,11 @@ public:
     std::lock_guard<std::mutex> lock2(odoLock);
 
     // make sure IMU data available for the scan
+    if (imuQueue.empty()) {
+      RCLCPP_DEBUG(get_logger(), "Waiting for IMU data ...");
+      return false;
+    }
+
     auto t_f = imuQueue.front().header.stamp.sec +
       imuQueue.front().header.stamp.nanosec * 1e-9;
     auto t_b = imuQueue.back().header.stamp.sec +
