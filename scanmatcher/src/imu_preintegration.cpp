@@ -318,6 +318,14 @@ public:
         break;
       }
     }
+
+    // if the factor has no deltaTij don't add it to the graph
+    if(imuIntegratorOpt_->deltaTij() == 0.0){
+      //printf("Don't add Factor because deltaTij == 0.0 \n");
+      //fflush(stdout);
+      return;
+    }
+
     // add imu factor to graph
     const gtsam::PreintegratedImuMeasurements & preint_imu =
       dynamic_cast<const gtsam::PreintegratedImuMeasurements &>(*imuIntegratorOpt_);
